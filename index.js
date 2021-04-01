@@ -4,6 +4,9 @@ const {ApolloServer, gql} = require('apollo-server');
 const server = new ApolloServer();
 
 const typeDefs = gql`
+type Query {
+    sessions:[Session]
+}
 type Session {
     id:ID!
     title:String!,
