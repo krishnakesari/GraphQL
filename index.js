@@ -1,9 +1,10 @@
 const {ApolloServer, gql} = require('apollo-server');
-const sessions = require('./data/sessions.json');
+const SessionAPI = require('./datasources/sessions');
 
 const typeDefs = gql`
 type Query {
     sessions:[Session]
+    sessionsById(id:ID): Session
 }
 type Session {
     id:ID!
@@ -14,18 +15,25 @@ type Session {
     room:String,
     day:String,
     format:String,
-    track:String,
+    track:String @deprecated(reason: "No need for further study"),
     level:String
 }`
 
 const resolvers = {
     Query: {
-        sessions: ()=>{
-            return sessions;
+        sessions: (parent, args, {dataSources}, info)=>{
+            return dataSources.SessionAPI.getSessions();
+        },
+        sessionById: (parent, {id}, {dataSources}, info) => {
+            return dataSources.SessionAPI.getSessionById(id);
         }
     }
 };
-const server = new ApolloServer({typeDefs, resolvers});
+
+const dataSources = () =>  ({
+    sessionAPI: new SessionAPI()
+});
+const server = new ApolloServer({typeDefs, resolvers, dataSources});
 
 server
     .listen({port: process.env.PORT || 4000})
