@@ -4,7 +4,7 @@ const SessionAPI = require('./datasources/sessions');
 const typeDefs = gql`
 type Query {
     sessions:[Session]
-    sessionsById(id:ID): Session
+    sessionById(id:ID): Session
 }
 type Session {
     id:ID!
